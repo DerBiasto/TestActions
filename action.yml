@@ -10,8 +10,8 @@ runs:
   steps:
     - run: |
         echo "Pattern: ${{ inputs.pattern }}"
-        find "${{ inputs.pattern }}"
-        find "${{ inputs.pattern }}" | 
+        find -name "${{ inputs.pattern }}"
+        find -name "${{ inputs.pattern }}" | 
           while read file
           do
             echo "$file"
