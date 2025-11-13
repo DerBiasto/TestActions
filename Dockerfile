@@ -1,6 +1,6 @@
 FROM texlive/texlive
 
-RUN apt-get update && apt-get install node --yes
+# RUN apt-get update && apt-get install node --yes
 
 ADD *.sh /
 
