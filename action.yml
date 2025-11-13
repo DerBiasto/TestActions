@@ -41,7 +41,7 @@ runs:
       uses: actions/checkout@v4
     - name: update repository
       run: git pull --ff-only
-      if: inputs.pull || inputs.commit
+      if: ${{ inputs.pull == true || inputs.pull == 'true' || inputs.commit == true || inputs.commit == 'true' }}
     - name: compile .tex files
       run: |
         echo "Pattern: ${{ inputs.compile-pattern }}"
@@ -52,13 +52,13 @@ runs:
             latexmk -pdf -output-directory=$(dirname "$file") -aux-directory=${{ inputs.aux-directory }} "$file"
           done
     - name: commit pdfs
-      if: inputs.commit
+      if: ${{ inputs.commit == true || inputs.commit == 'true' }}
       run: |
         git config user.name "Auto Compile Action"
         git config user.email "compile-commit@tracker.cde-ev.de"
         git status
         git add "${{ inputs.commit-pattern }}"
-        if ${{ inputs.commit-aux }}; then
+        if ${{ inputs.commit-aux == true || inputs.commit-aux == 'true' }}; then
             git add -f ${{ inputs.aux-directory }}
         fi
         if ! git diff-index --quiet HEAD; then
@@ -68,7 +68,7 @@ runs:
             git push
         fi
     - name: upload pdfs
-      if: inputs.upload
+      if: ${{ inputs.upload == true || inputs.upload == 'true' }}
       uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.upload-name }}
