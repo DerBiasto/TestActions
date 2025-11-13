@@ -1,9 +1,12 @@
 name: 'Compile TeX Files'
-author: 'Me, I wrote it'
+author: 'Tobias Udtke'
 
 inputs:
   pattern:
     description: 'The pattern for which texfiles to compile'
+  aux-directory:
+    description: 'Directory in which to commit latexmk aux files'
+    default: '.aux'
 
 runs:
   using: 'composite'
@@ -14,5 +17,5 @@ runs:
           while read file
           do
             echo "$file"
-            latexmk -pdf -output-directory=$(dirname "$file") "$file"
+            latexmk -pdf -output-directory=$(dirname "$file") -aux-directory=${{ inputs.aux-directory }} "$file"
           done
