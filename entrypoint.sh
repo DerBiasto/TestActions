@@ -2,6 +2,8 @@
 
 set -e
 
+echo "$1"
+
 find -name "$1" |
 while
     read file
