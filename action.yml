@@ -35,6 +35,7 @@ runs:
     - run: |
         cat <<'EOF'
         ${{ toJSON(forgejo) }}
+        ${{ toJSON(inputs) }}
         EOF
     - name: checkout repository
       uses: actions/checkout@v4
