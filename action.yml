@@ -2,20 +2,45 @@ name: 'Compile TeX Files'
 author: 'Tobias Udtke'
 
 inputs:
-  pattern:
+  compile-pattern:
     description: 'The pattern for which texfiles to compile'
   aux-directory:
     description: 'Directory in which to commit latexmk aux files'
     default: '.aux'
+  commit:
+    description: 'Whether to commit the resulting files'
+    default: false
+  commit-pattern:
+    description: 'Which files to commit.'
+    default: "**.pdf"
+  commit-aux:
+    description: 'Whether to commit aux files'
+    default: true
 
 runs:
   using: 'composite'
   steps:
-    - run: |
-        echo "Pattern: ${{ inputs.pattern }}"
-        find -name "${{ inputs.pattern }}" | 
+    - name: compile .tex files
+      run: |
+        echo "Pattern: ${{ inputs.compile-pattern }}"
+        find -name "${{ inputs.compile-pattern }}" | 
           while read file
           do
             echo "$file"
             latexmk -pdf -output-directory=$(dirname "$file") -aux-directory=${{ inputs.aux-directory }} "$file"
           done
+    - name: commit pdfs
+      if: inputs.commit
+      run: |
+          #git config user.name "Auto Compile Action"
+          #git config user.email "compile-commit@tracker.cde-ev.de"
+          git status
+          git add "${{ inputs.commit-pattern }}"
+          if ${{ inputs.commit-aux }}; then
+              git add -f ${{ inputs.aux-directory }}
+          fi
+          if ! git diff-index --quiet HEAD; then
+              git commit -m "[auto] compile all PDFs" || true
+              git log -n 1
+              git push
+          fi
