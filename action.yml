@@ -67,5 +67,5 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.upload-name }}
-        path: ${{ inputs.upload-name }}
+        path: ${{ inputs.upload-pattern }}
     
