@@ -14,5 +14,5 @@ runs:
           while read file
           do
             echo "$file"
-            latex-mk -pdf -output-directory=$(dirname "$file") "$file"
+            latexmk -pdf -output-directory=$(dirname "$file") "$file"
           done
