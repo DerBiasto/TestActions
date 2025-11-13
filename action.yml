@@ -8,4 +8,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: echo "${{ inputs.pattern }}"
+    - run: |
+        echo "Pattern: ${{ inputs.pattern }}"
+        find "${{ inputs.pattern }}"
+        find "${{ inputs.pattern }}" | 
+          while read file
+          do
+            echo "$file"
+            echo $(dirname "$file")
+          done
