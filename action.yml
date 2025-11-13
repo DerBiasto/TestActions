@@ -19,6 +19,15 @@ inputs:
   commit-aux:
     description: 'Whether to commit aux files'
     default: true
+  upload:
+    description: 'Whether to upload compiled files'
+    default: false
+  upload-name:
+    description: 'Name of the uploaded artifact'
+    default: 'PDFs'
+  upload-pattern:
+    description: 'Which files to upload.'
+    default: '**/*.pdf'
 
 runs:
   using: 'composite'
@@ -40,16 +49,23 @@ runs:
     - name: commit pdfs
       if: inputs.commit
       run: |
-          git config user.name "Auto Compile Action"
-          git config user.email "compile-commit@tracker.cde-ev.de"
-          git status
-          git add "${{ inputs.commit-pattern }}"
-          if ${{ inputs.commit-aux }}; then
-              git add -f ${{ inputs.aux-directory }}
-          fi
-          if ! git diff-index --quiet HEAD; then
-              git status
-              git commit -m "[auto] compile all PDFs" || true
-              git log -n 1
-              git push
-          fi
+        git config user.name "Auto Compile Action"
+        git config user.email "compile-commit@tracker.cde-ev.de"
+        git status
+        git add "${{ inputs.commit-pattern }}"
+        if ${{ inputs.commit-aux }}; then
+            git add -f ${{ inputs.aux-directory }}
+        fi
+        if ! git diff-index --quiet HEAD; then
+            git status
+            git commit -m "[auto] compile all PDFs" || true
+            git log -n 1
+            git push
+        fi
+    - name: upload pdfs
+      if: inputs.upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.upload-name }}
+        path: ${{ inputs.upload-name }}
+    
