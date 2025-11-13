@@ -6,7 +6,6 @@ inputs:
     description: 'The pattern for which texfiles to compile'
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile-texlive'
-  args:
-    - ${{ inputs.pattern }}
+  using: 'composite'
+  steps:
+    - run: echo "${{ inputs.message }}"
