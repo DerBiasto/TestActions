@@ -33,11 +33,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - run: |
-        cat <<'EOF'
-        ${{ toJSON(forgejo) }}
-        ${{ toJSON(inputs) }}
-        EOF
     - name: checkout repository
       uses: actions/checkout@v4
     - name: update repository
@@ -45,8 +40,11 @@ runs:
       if: ${{ inputs.pull == true || inputs.pull == 'true' || inputs.commit == true || inputs.commit == 'true' }}
     - name: compile .tex files
       run: |
+        echo ""
         echo "Pattern: ${{ inputs.compile-pattern }}"
-        find -name "${{ inputs.compile-pattern }}" | 
+        find -name "${{ inputs.compile-pattern }}"
+        echo ""
+        find -name "${{ inputs.compile-pattern }}" |
           while read file
           do
             echo "$file"
