@@ -60,7 +60,8 @@ runs:
         git status
         git add "${{ inputs.commit-pattern }}"
         if ${{ inputs.commit-aux == true || inputs.commit-aux == 'true' }}; then
-            git add -f ${{ inputs.aux-directory }}
+            # Force commit all aux files other than logs.
+            git add -f ${{ inputs.aux-directory }} ':!${{ inputs.aux-directory }}/*.log'
         fi
         if ! git diff-index --quiet HEAD; then
             git status
